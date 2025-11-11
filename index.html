@@ -50,6 +50,11 @@
             body {
                 background-image: url('https://i.ibb.co/V0b5ws7H/photo5-p59m62dzi5tc7w5lc1xo340bmm3l099tui4p2n8n76.jpg'); /* Desktop/Landscape Image */
             }
+            
+            /* FIX 2: Make overlay lighter on desktop only */
+            body::before {
+                background-color: rgba(245, 227, 255, 0.35); /* Was 0.5 */
+            }
         }
 
         /* Overlay */
@@ -60,7 +65,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(245, 227, 255, 0.5); /* Reduced opacity */
+            background-color: rgba(245, 227, 255, 0.5); /* Reduced opacity (default for mobile) */
             z-index: -2; /* Pushed further back */
         }
 
@@ -136,8 +141,10 @@
 
 
     <!-- Main Content Wrapper (Centered and Padded) -->
-    <!-- FIX: Moved padding here -->
-    <div class="w-full max-w-7xl mx-auto flex flex-col items-center px-4 py-8"> 
+    <!-- 
+      FIX 1: Removed max-w-7xl, added responsive padding for desktop 
+    -->
+    <div class="w-full mx-auto flex flex-col items-center px-4 lg:px-24 xl:px-32 py-8"> 
     
         <!-- Centered content block -->
         <div class="text-center flex flex-col items-center justify-between w-full">
