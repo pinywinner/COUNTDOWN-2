@@ -51,9 +51,9 @@
                 background-image: url('https://i.ibb.co/V0b5ws7H/photo5-p59m62dzi5tc7w5lc1xo340bmm3l099tui4p2n8n76.jpg'); /* Desktop/Landscape Image */
             }
             
-            /* FIX 2: Make overlay lighter on desktop only */
+            /* FIX: Make overlay lighter (0.20) on desktop only */
             body::before {
-                background-color: rgba(245, 227, 255, 0.35); /* Was 0.5 */
+                background-color: rgba(245, 227, 255, 0.20); /* Was 0.35 */
             }
         }
 
@@ -141,10 +141,8 @@
 
 
     <!-- Main Content Wrapper (Centered and Padded) -->
-    <!-- 
-      FIX 1: Removed max-w-7xl, added responsive padding for desktop 
-    -->
-    <div class="w-full mx-auto flex flex-col items-center px-4 lg:px-24 xl:px-32 py-8"> 
+    <!-- FIX: Removed desktop padding, will be controlled by main grid's max-width -->
+    <div class="w-full mx-auto flex flex-col items-center px-4 py-8"> 
     
         <!-- Centered content block -->
         <div class="text-center flex flex-col items-center justify-between w-full">
@@ -176,7 +174,11 @@
             </div>
 
             <!-- Countdown Timer Blocks -->
-            <main id="countdown-container" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-6 lg:mb-12 w-full" style="direction: rtl;">
+            <!-- 
+              FIX: Reverted to lg:grid-cols-2 
+              FIX: Added lg:max-w-5xl to make the 2x2 grid "full"
+            -->
+            <main id="countdown-container" class="grid grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-8 mb-6 lg:mb-12 w-full lg:max-w-5xl" style="direction: rtl;">
                 <div id="days-box" class="bg-white rounded-none p-3 lg:p-6 border-8 border-black brutal-shadow transform rotate-2 hover:scale-110 transition-transform">
                     <div id="days" class="text-4xl sm:text-5xl lg:text-7xl countdown-number">00</div>
                     <div class="text-sm sm:text-base lg:text-xl font-bold mt-1 label-text">ימים</div>
@@ -230,7 +232,7 @@
 
                     if (distance < 0) {
                         clearInterval(interval);
-                        countdownContainer.innerHTML = `<div class="col-span-2 lg:col-span-4 bg-white p-6 border-8 border-black brutal-shadow"><h2 class="text-4xl text-[#FF0000]">הטיסה יצאה!</h2></div>`;
+                        countdownContainer.innerHTML = `<div class="col-span-2 lg:col-span-2 bg-white p-6 border-8 border-black brutal-shadow"><h2 class="text-4xl text-[#FF0000]">הטיסה יצאה!</h2></div>`;
                         if (footerMessage) footerMessage.innerHTML = '<p class="text-xl font-bold bg-black text-white inline-block p-4">נסיעה טובה!</p>';
                         return;
                     }
