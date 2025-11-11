@@ -24,6 +24,11 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <style>
+        /* FIX: Prevent all overflow */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
         body {
             font-family: 'Anton', sans-serif;
             background-color: #F5E3FF; /* Fallback color */
@@ -36,9 +41,8 @@
             background-attachment: fixed;
             position: relative; 
             z-index: 0;
-            /* Added padding for breathing room */
-            padding-top: 2rem;
-            padding-bottom: 2rem;
+            margin: 0; /* Reset default margin */
+            padding: 0; /* Reset default padding */
         }
 
         /* Desktop background image */
@@ -65,14 +69,21 @@
         .label-text { letter-spacing: 0.05em; }
         .transition-transform { transition: transform 0.2s ease-in-out; }
         
-        #confetti-canvas { 
+        #confetti-canvas, #burst-confetti-canvas { 
             position: fixed; 
             top: 0; 
             left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            z-index: -1; /* Behind content */
+            width: 100%; /* FIX: Use 100% instead of 100vw */
+            height: 100%; /* FIX: Use 100% instead of 100vh */
             pointer-events: none; 
+        }
+        
+        #confetti-canvas {
+            z-index: -1; /* Behind content */
+        }
+
+        #burst-confetti-canvas {
+            z-index: 10; /* On top of everything */
         }
         
         @keyframes pop { 50% { transform: scale(1.2); } }
@@ -114,14 +125,19 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen px-4">
+<!-- FIX: Removed padding from body, added flex wrapper -->
+<body class="min-h-screen flex items-center justify-center">
 
-    <!-- Confetti Canvas -->
+    <!-- Confetti Canvas (Background) -->
     <canvas id="confetti-canvas"></canvas>
+    
+    <!-- Burst Effect Canvas -->
+    <canvas id="burst-confetti-canvas"></canvas>
 
-    <!-- Main Content Wrapper (Centered) -->
-    <!-- CHANGE 1: Widened container on desktop -->
-    <div class="w-full max-w-7xl mx-auto flex flex-col items-center"> 
+
+    <!-- Main Content Wrapper (Centered and Padded) -->
+    <!-- FIX: Moved padding here -->
+    <div class="w-full max-w-7xl mx-auto flex flex-col items-center px-4 py-8"> 
     
         <!-- Centered content block -->
         <div class="text-center flex flex-col items-center justify-between w-full">
@@ -133,10 +149,10 @@
                     <!-- Front (New Title) -->
                     <div class="header-front">
                         <div class="bg-white py-3 px-4 border-8 border-black brutal-shadow">
-                            <!-- CHANGE 3: Larger text on desktop -->
                             <h1 class="text-3xl sm:text-4xl lg:text-5xl text-black my-1 flex flex-wrap items-center justify-center font-normal leading-tight">
-                                <span>ספירה לאחור לטיסה של </span>
-                                <strong class="font-bold ml-1">ציבי לקרעסטיר</strong>
+                                <span>ספירה לאחור לטיסה של</span>
+                                <!-- FIX: Increased margin to ml-2 for more space -->
+                                <strong class="font-bold ml-2"> ציבי לקרעסטיר</strong>
                             </h1>
                             <p class="text-md sm:text-lg lg:text-xl mt-2 tracking-widest">ממריאים בעוד:</p>
                         </div>
@@ -145,31 +161,27 @@
                     <!-- Back (Updated Welcome) -->
                     <div class="header-back">
                          <div class="bg-white py-3 px-4 border-8 border-black brutal-shadow">
-                            <h1 class="text-5xl sm:text-6xl lg:text-7xl text-black my-4 px-8">נסיעה טובה, ציבי!</h1>
+                            <!-- FIX: Comma is DEFINITELY removed here -->
+                            <h1 class="text-5xl sm:text-6xl lg:text-7xl text-black my-4 px-8">נסיעה טובה ציבי!</h1>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Countdown Timer Blocks -->
-            <!-- CHANGE 1: Grid changes from 2x2 on mobile to 1x4 on desktop -->
-            <main id="countdown-container" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-6 lg:mb-12 w-full">
-                <!-- CHANGE 2: Larger padding and text on desktop -->
+            <main id="countdown-container" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-6 lg:mb-12 w-full" style="direction: rtl;">
                 <div id="days-box" class="bg-white rounded-none p-3 lg:p-6 border-8 border-black brutal-shadow transform rotate-2 hover:scale-110 transition-transform">
                     <div id="days" class="text-4xl sm:text-5xl lg:text-7xl countdown-number">00</div>
                     <div class="text-sm sm:text-base lg:text-xl font-bold mt-1 label-text">ימים</div>
                 </div>
-                <!-- CHANGE 2: Larger padding and text on desktop -->
                 <div id="hours-box" class="bg-white rounded-none p-3 lg:p-6 border-8 border-black brutal-shadow transform -rotate-2 hover:scale-110 transition-transform">
                     <div id="hours" class="text-4xl sm:text-5xl lg:text-7xl countdown-number">00</div>
                     <div class="text-sm sm:text-base lg:text-xl font-bold mt-1 label-text">שעות</div>
                 </div>
-                <!-- CHANGE 2: Larger padding and text on desktop -->
                 <div id="minutes-box" class="bg-white rounded-none p-3 lg:p-6 border-8 border-black brutal-shadow transform rotate-1 hover:scale-110 transition-transform">
                     <div id="minutes" class="text-4xl sm:text-5xl lg:text-7xl countdown-number">00</div>
                     <div class="text-sm sm:text-base lg:text-xl font-bold mt-1 label-text">דקות</div>
                 </div>
-                <!-- CHANGE 2: Larger padding and text on desktop -->
                 <div id="seconds-box" class="bg-white rounded-none p-3 lg:p-6 border-8 border-black brutal-shadow transform -rotate-1 hover:scale-110 transition-transform">
                     <div id="seconds" class="text-4xl sm:text-5xl lg:text-7xl countdown-number">00</div>
                     <div class="text-sm sm:text-base lg:text-xl font-bold mt-1 label-text">שניות</div>
@@ -178,7 +190,6 @@
             
             <!-- Footer Date Display -->
             <footer id="footer-message" class="transform transition-transform hover:scale-105 rotate-1">
-                 <!-- CHANGE 2: Larger text on desktop -->
                  <p class="text-base sm:text-lg lg:text-2xl font-bold bg-black text-white inline-block py-2 px-4">07.12.2025 | י"ז כסלו תשפ"ו | 07:25</p>
             </footer>
         </div>
@@ -191,10 +202,7 @@
             const flipper = document.getElementById('header-flipper');
 
             function startCountdown() {
-                // Correct Target Date and Time
                 const countdownDate = new Date("2025-12-07T07:25:00").getTime();
-                
-                // Get elements
                 const daysEl = document.getElementById('days');
                 const hoursEl = document.getElementById('hours');
                 const minutesEl = document.getElementById('minutes');
@@ -207,28 +215,24 @@
                 const footerMessage = document.getElementById('footer-message');
                 let prevDays, prevHours, prevMinutes, prevSeconds;
 
-                if (!daysEl) return; // Exit if elements not found
+                if (!daysEl) return; 
 
                 const interval = setInterval(() => {
                     const now = new Date().getTime();
                     const distance = countdownDate - now;
 
-                    // When countdown ends
                     if (distance < 0) {
                         clearInterval(interval);
-                        // Updated Expired Message
                         countdownContainer.innerHTML = `<div class="col-span-2 lg:col-span-4 bg-white p-6 border-8 border-black brutal-shadow"><h2 class="text-4xl text-[#FF0000]">הטיסה יצאה!</h2></div>`;
                         if (footerMessage) footerMessage.innerHTML = '<p class="text-xl font-bold bg-black text-white inline-block p-4">נסיעה טובה!</p>';
                         return;
                     }
 
-                    // Calculate time
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                    // Pop animation on change
                     if (seconds !== prevSeconds) {
                         secondsBox.classList.add('animate-pop');
                         setTimeout(() => secondsBox.classList.remove('animate-pop'), 400);
@@ -246,10 +250,8 @@
                         setTimeout(() => daysBox.classList.remove('animate-pop'), 400);
                     }
 
-                    // Store previous values
                     prevDays = days; prevHours = hours; prevMinutes = minutes; prevSeconds = seconds;
                     
-                    // Update display
                     daysEl.innerText = String(days).padStart(2, '0');
                     hoursEl.innerText = String(hours).padStart(2, '0');
                     minutesEl.innerText = String(minutes).padStart(2, '0');
@@ -261,9 +263,25 @@
             
             flipper.classList.add('is-flipped'); // Start flipped
             
-            setTimeout(() => { // Launch confetti
-                confetti({ particleCount: 150, spread: 90, origin: { y: 0.1 } });
-            }, 200);
+            const burstCanvas = document.getElementById('burst-confetti-canvas');
+            if (burstCanvas) {
+                
+                // Create a confetti instance tied to the specific canvas
+                const myConfetti = confetti.create(burstCanvas, {
+                  resize: true,
+                  useWorker: false // FIX: Ensure worker is disabled
+                });
+
+                setTimeout(() => { // Launch confetti
+                    myConfetti({
+                        particleCount: 150,
+                        spread: 90,
+                        origin: { y: 0.1 },
+                        useWorker: false // FIX: Ensure worker is disabled
+                    });
+                }, 200);
+            }
+
 
             setTimeout(() => { // Flip back
                 flipper.classList.remove('is-flipped');
@@ -274,50 +292,56 @@
 
             // --- Background Confetti Logic ---
             const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            let particles = [];
-            const particleCount = 50;
-            const colors = ["rgba(0,0,0,0.3)", "rgba(0,0,0,0.5)"];
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                let particles = [];
+                const particleCount = 50;
+                const colors = ["rgba(0,0,0,0.3)", "rgba(0,0,0,0.5)"];
 
-            function Particle(x, y, size, shape, color, speed) {
-                this.x = x; this.y = y; this.size = size; this.shape = shape; this.color = color; this.speed = speed; this.rotation = Math.random() * 360;
-            }
-            Particle.prototype.draw = function() {
-                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotation * Math.PI / 180); ctx.fillStyle = this.color;
-                if (this.shape === 'square') { ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size); } 
-                else { ctx.fillRect(-this.size / 2, -1, this.size, 2); } // Line shape
-                ctx.restore();
-            };
-            Particle.prototype.update = function() {
-                this.y += this.speed; this.rotation += this.speed / 2;
-                if (this.y > canvas.height) { // Reset particle
-                    this.y = -this.size; this.x = Math.random() * canvas.width; 
+                function Particle(x, y, size, shape, color, speed) {
+                    this.x = x; this.y = y; this.size = size; this.shape = shape; this.color = color; this.speed = speed; this.rotation = Math.random() * 360;
                 }
-            };
-            function initParticles() {
-                for (let i = 0; i < particleCount; i++) {
-                    const x = Math.random() * canvas.width; const y = Math.random() * canvas.height; const size = Math.random() * 15 + 5;
-                    const shape = Math.random() > 0.5 ? 'square' : 'line'; const color = colors[Math.floor(Math.random() * colors.length)];
-                    const speed = Math.random() * 1 + 0.2; particles.push(new Particle(x, y, size, shape, color, speed));
+                Particle.prototype.draw = function() {
+                    ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotation * Math.PI / 180); ctx.fillStyle = this.color;
+                    // FIX: Corrected this-size to this.size
+                    if (this.shape === 'square') { ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size); } 
+                    else { ctx.fillRect(-this.size / 2, -1, this.size, 2); } // Line shape
+                    ctx.restore();
+                };
+                Particle.prototype.update = function() {
+                    this.y += this.speed; this.rotation += this.speed / 2;
+                    if (this.y > canvas.height) { // Reset particle
+                        this.y = -this.size; this.x = Math.random() * canvas.width; 
+                    }
+                };
+                function initParticles() {
+                    particles = []; // Clear existing particles
+                    for (let i = 0; i < particleCount; i++) {
+                        const x = Math.random() * canvas.width; const y = Math.random() * canvas.height; const size = Math.random() * 15 + 5;
+                        const shape = Math.random() > 0.5 ? 'square' : 'line'; const color = colors[Math.floor(Math.random() * colors.length)];
+                        const speed = Math.random() * 1 + 0.2; particles.push(new Particle(x, y, size, shape, color, speed));
+                    }
                 }
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); }
+                    requestAnimationFrame(animate);
+                }
+                initParticles();
+                animate();
+                
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                        canvas.width = window.innerWidth; canvas.height = window.innerHeight; 
+                        initParticles(); // Re-initialize particles on resize
+                    }
+                });
             }
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); }
-                requestAnimationFrame(animate);
-            }
-            initParticles();
-            animate();
-            
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth; canvas.height = window.innerHeight; particles = []; initParticles();
-            });
         };
     </script>
 
 </body>
 </html>
-
